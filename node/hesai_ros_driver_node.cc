@@ -98,7 +98,11 @@ int main(int argc, char** argv)
   try {
     config = YAML::LoadFile(config_path);
   } catch (const std::exception& e) {
-    printf("Load config error: %s\n", e.what());
+#ifdef ROS_FOUND
+    ROS_ERROR("Load config error: %s", e.what());
+#elif ROS2_FOUND
+    RCLCPP_ERROR(rclcpp::get_logger("hesai_ros_driver_node"), "Load config error: %s", e.what());
+#endif
     return -1;
   }
   std::shared_ptr<NodeManager> demo_ptr = std::make_shared<NodeManager>();
